@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(bonsais)
 
-set(CMAKE_CXX_FLAGS "-Wall -std=c++14")
+set(CMAKE_CXX_FLAGS "-Wall -std=c++11")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -O3")
 
 if(NOT CMAKE_BUILD_TYPE)

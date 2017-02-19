@@ -1,7 +1,3 @@
-//
-// Created by Kampersanda on 2017/02/08.
-//
-
 #ifndef BONSAIS_BASICS_HPP
 #define BONSAIS_BASICS_HPP
 
@@ -66,6 +62,6 @@ inline uint64_t greater_prime(uint64_t n) {
   return ret;
 }
 
-}
+} //bonsais
 
 #endif //BONSAIS_BASICS_HPP

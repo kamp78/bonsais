@@ -1,7 +1,3 @@
-//
-// Created by Kampersanda on 2017/02/09.
-//
-
 #include "Bonsai.hpp"
 #include "BonsaiPlus.hpp"
 
@@ -41,7 +37,7 @@ public:
   StopWatch& operator=(const StopWatch&) = delete;
 
 private:
-  std::chrono::high_resolution_clock::time_point tp_{};
+  std::chrono::high_resolution_clock::time_point tp_;
 };
 
 class KeyReader {
@@ -66,8 +62,8 @@ public:
   KeyReader& operator=(const KeyReader&) = delete;
 
 private:
-  std::ifstream ifs_{};
-  std::string buf_{};
+  std::ifstream ifs_;
+  std::string buf_;
 };
 
 std::vector<std::string> read_keys(const char* file_name) {

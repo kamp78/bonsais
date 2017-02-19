@@ -1,9 +1,5 @@
-//
-// Created by Kampersanda on 2017/02/04.
-//
-
-#ifndef BONSAIS_BONSAIDCW_HPP
-#define BONSAIS_BONSAIDCW_HPP
+#ifndef BONSAIS_BONSAI_HPP
+#define BONSAIS_BONSAI_HPP
 
 #include "Basics.hpp"
 
@@ -57,23 +53,23 @@ public:
 
 private:
   struct NodeID {
-    uint64_t init_pos{};
-    uint64_t num_colls{};
-    uint64_t slot_pos{}; // for convenience
+    uint64_t init_pos;
+    uint64_t num_colls;
+    uint64_t slot_pos; // for convenience
   };
 
-  uint64_t num_slots_{};
-  uint64_t num_nodes_{};
-  uint64_t alp_size_{};
-  uint32_t colls_limit_{};
+  uint64_t num_slots_;
+  uint64_t num_nodes_;
+  uint64_t alp_size_;
+  uint32_t colls_limit_;
 
-  NodeID root_id_{};
-  uint64_t empty_mark_{};
+  NodeID root_id_;
+  uint64_t empty_mark_;
 
-  uint64_t prime_{};
-  uint64_t multiplier_{};
+  uint64_t prime_;
+  uint64_t multiplier_;
 
-  sdsl::int_vector<> slots_{}; // with quotient value, virgin bit, change bit, and final bit
+  sdsl::int_vector<> slots_; // with quotient value, virgin bit, change bit, and final bit
 
   const uint64_t quo_inv_mask_ = 7U;
   const uint64_t vbit_inv_mask_ = ~(1U << 2);
@@ -102,9 +98,9 @@ private:
   void set_cbit_(uint64_t pos, bool bit);
   void set_fbit_(uint64_t pos, bool bit);
 
-  inline void update_slot_(uint64_t pos, uint64_t quo, bool vbit, bool cbit, bool fbit);
+  void update_slot_(uint64_t pos, uint64_t quo, bool vbit, bool cbit, bool fbit);
 };
 
 } //bonsais
 
-#endif //BONSAIS_BONSAIDCW_HPP
+#endif //BONSAIS_BONSAI_HPP

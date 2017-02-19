@@ -1,7 +1,3 @@
-//
-// Created by Kampersanda on 2017/02/05.
-//
-
 #include "BonsaiPlus.hpp"
 
 namespace bonsais {

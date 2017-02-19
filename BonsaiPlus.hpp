@@ -1,9 +1,5 @@
-//
-// Created by Kampersanda on 2017/02/05.
-//
-
-#ifndef BONSAIS_BONSAIPR_HPP
-#define BONSAIS_BONSAIPR_HPP
+#ifndef BONSAIS_BONSAI_PLUS_HPP
+#define BONSAIS_BONSAI_PLUS_HPP
 
 #include "Basics.hpp"
 
@@ -55,20 +51,20 @@ public:
   BonsaiPlus& operator=(const BonsaiPlus&) = delete;
 
 private:
-  uint64_t num_slots_{};
-  uint64_t num_nodes_{};
-  uint64_t alp_size_{};
-  uint8_t width_1st_{};
+  uint64_t num_slots_;
+  uint64_t num_nodes_;
+  uint64_t alp_size_;
+  uint8_t width_1st_;
 
-  uint64_t root_id_{};
-  uint64_t empty_mark_{};
-  uint64_t max_dsp1st_{}; // maximum displacement value in 1st layer
+  uint64_t root_id_;
+  uint64_t empty_mark_;
+  uint64_t max_dsp1st_; // maximum displacement value in 1st layer
 
-  uint64_t prime_{};
-  uint64_t multiplier_{};
+  uint64_t prime_;
+  uint64_t multiplier_;
 
-  sdsl::int_vector<> slots_{}; // with quotient value, displacement value, and final bit
-  std::map<uint64_t, uint32_t> aux_map_{}; // for exceeding displacement values
+  sdsl::int_vector<> slots_; // with quotient value, displacement value, and final bit
+  std::map<uint64_t, uint32_t> aux_map_; // for exceeding displacement values
 
   HashValue hash_(uint64_t node_id, uint64_t symbol) const;
 
@@ -87,4 +83,4 @@ private:
 
 } //bonsais
 
-#endif //BONSAIS_BONSAIPR_HPP
+#endif //BONSAIS_BONSAI_PLUS_HPP

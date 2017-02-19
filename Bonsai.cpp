@@ -1,7 +1,3 @@
-//
-// Created by Kampersanda on 2017/02/04.
-//
-
 #include "Bonsai.hpp"
 
 namespace bonsais {
@@ -12,7 +8,7 @@ Bonsai::Bonsai(uint64_t num_slots, uint64_t alp_size, uint8_t colls_bits) {
   alp_size_ = alp_size;
   colls_limit_ = 1U << colls_bits;
 
-  root_id_ = {num_slots_ / 2, 0}; // without a particular reason
+  root_id_ = {num_slots_ / 2, 0, num_slots_ / 2}; // without a particular reason
   empty_mark_ = alp_size * colls_limit_ + 2; // greater than the maximum quotient value expected
 
   prime_ = greater_prime(alp_size * colls_limit_ * num_slots_ + num_slots_ - 1);
