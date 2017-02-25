@@ -34,6 +34,7 @@ void Bonsai::show_stat(std::ostream& os) const {
   os << "load factor: " << static_cast<double>(num_nodes_) / num_slots_ << std::endl;
   os << "alp size:    " << alp_size_ << std::endl;
   os << "colls limit: " << colls_limit_ << std::endl;
+  os << "size slots:  " << sdsl::size_in_bytes(slots_) << std::endl;
 }
 
 // expecting 0 <= quo <= alp_size + 1

@@ -128,7 +128,7 @@ uint64_t count_num_nodes(const char* file_name) {
     ++num_nodes;
   }
 
-  return num_nodes;
+  return num_nodes + keys.size(); // including terminators
 }
 
 template<typename T>
@@ -143,7 +143,7 @@ bool run_insertion(T& bonsai, KeyReader& reader) {
     }
 
     auto ptr = reinterpret_cast<const uint8_t*>(key.c_str());
-    auto len = key.size();
+    auto len = key.size() + 1; // including terminators
     if (!bonsai.insert(ptr, len)) {
       std::cerr << "failed to insert " << key << std::endl;
       return false;
@@ -162,7 +162,7 @@ bool run_search(const T& bonsai, const std::vector<std::string>& keys) {
 
   for (const auto& key : keys) {
     auto ptr = reinterpret_cast<const uint8_t*>(key.c_str());
-    auto len = key.size();
+    auto len = key.size() + 1; // including terminators
     if (!bonsai.search(ptr, len)) {
       std::cerr << "failed to search " << key << std::endl;
       return false;

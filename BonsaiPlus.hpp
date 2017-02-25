@@ -47,6 +47,8 @@ public:
   std::string name() const { return "BonsaiPlus"; }
   void show_stat(std::ostream& os) const;
 
+  double calc_ave_dsp() const;
+
   BonsaiPlus(const BonsaiPlus&) = delete;
   BonsaiPlus& operator=(const BonsaiPlus&) = delete;
 
