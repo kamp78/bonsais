@@ -18,13 +18,13 @@ The experiments were carried out on Mac OS X 10.12 over Quad-core Intel Core i7 
 The codes were compiled using Apple LLVM version 8 (clang-8) with optimization -O3.
 The runtimes were measured using __std::chrono::duration_cast__.
 To measure the required memory sizes, the __/usr/bin/time__ command was used.
-The tries were constructed from all page titles from English Wikipedia of February 2015 (# of nodes: 110962030, # of keys: 11519354, raw size: 227.2 MiB).
+The tries were constructed from all page titles from English Wikipedia of February 2015 (# of nodes: 110,962,030, # of keys: 11,519,354, raw size: 227.2 MiB).
 
 ### Required memory size on BonsaiPlus parameters 
 
 To explore BonsaiPlus parameters that construct compact trie structures, the required memory sizes were tested for combinations of the load factor and displacement entry size.
 
-![Result](https://github.com/kamp78/bonsais/blob/master/img/fig1.png?raw=true)
+![Result](https://github.com/kamp78/bonsais/blob/master/graph.png?raw=true)
 
 ### Comparison between Bonsai and BonsaiPlus
 
