@@ -24,7 +24,7 @@ The tries were constructed from all page titles from English Wikipedia of Februa
 
 To explore BonsaiPlus parameters that construct compact trie structures, the required memory sizes were tested for combinations of the load factor and displacement entry size.
 
-![Result](img/fig1.pdf)
+![Result](https://github.com/kamp78/bonsais/blob/master/img/fig1.pdf?raw=true)
 
 ### Comparison between Bonsai and BonsaiPlus
 
