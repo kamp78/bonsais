@@ -1,6 +1,7 @@
 #ifndef BONSAIS_BASICS_HPP
 #define BONSAIS_BASICS_HPP
 
+#include <array>
 #include <cassert>
 #include <iostream>
 #include <vector>

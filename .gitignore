@@ -29,6 +29,7 @@
 *.app
 
 # My Definition
+enwiki-20150205
 build/
 cmake-build-debug/
 .idea/

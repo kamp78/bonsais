@@ -1,5 +1,5 @@
-#include "Bonsai.hpp"
-#include "BonsaiPlus.hpp"
+#include "BonsaiDCW.hpp"
+#include "BonsaiPR.hpp"
 
 using namespace bonsais;
 
@@ -16,21 +16,15 @@ public:
 
   double operator()(Times type) const {
     auto tp = std::chrono::high_resolution_clock::now() - tp_;
-    double ret;
-
     switch (type) {
       case Times::sec:
-        ret = std::chrono::duration<double>(tp).count();
-        break;
+        return std::chrono::duration<double>(tp).count();
       case Times::milli:
-        ret = std::chrono::duration<double, std::milli>(tp).count();
-        break;
+        return std::chrono::duration<double, std::milli>(tp).count();
       case Times::micro:
-        ret = std::chrono::duration<double, std::micro>(tp).count();
-        break;
+        return std::chrono::duration<double, std::micro>(tp).count();
     }
-
-    return ret;
+    return 0.0;
   }
 
   StopWatch(const StopWatch&) = delete;
@@ -69,7 +63,7 @@ private:
 std::vector<std::string> read_keys(const char* file_name) {
   std::ifstream ifs{file_name};
   if (!ifs) {
-    std::cerr << "error : failed to open " << file_name << std::endl;
+    std::cerr << "ERROR: failed to open " << file_name << std::endl;
     return {};
   }
 
@@ -89,7 +83,7 @@ std::vector<std::string> read_keys(const char* file_name) {
 uint64_t count_num_nodes(const char* file_name) {
   auto keys = read_keys(file_name);
   if (keys.empty()) {
-    std::cerr << "error : failed to open " << file_name << std::endl;
+    std::cerr << "ERROR: failed to open " << file_name << std::endl;
     return 0;
   }
 
@@ -132,73 +126,50 @@ uint64_t count_num_nodes(const char* file_name) {
 }
 
 template<typename T>
-bool run_insertion(T& bonsai, KeyReader& reader) {
-  size_t num_keys = 0;
-  StopWatch sw;
-
-  while (true) {
-    auto key = reader.next();
-    if (key.empty()) {
-      break;
-    }
-
-    auto ptr = reinterpret_cast<const uint8_t*>(key.c_str());
-    auto len = key.size() + 1; // including terminators
-    if (!bonsai.insert(ptr, len)) {
-      std::cerr << "failed to insert " << key << std::endl;
-      return false;
-    }
-
-    ++num_keys;
-  }
-
-  std::cout << "insertion time : " << sw(Times::micro) / num_keys << " (ns / key)" << std::endl;
-  return true;
-}
-
-template<typename T>
-bool run_search(const T& bonsai, const std::vector<std::string>& keys) {
-  StopWatch sw;
-
-  for (const auto& key : keys) {
-    auto ptr = reinterpret_cast<const uint8_t*>(key.c_str());
-    auto len = key.size() + 1; // including terminators
-    if (!bonsai.search(ptr, len)) {
-      std::cerr << "failed to search " << key << std::endl;
-      return false;
-    }
-  }
-
-  std::cout << "search time : " << sw(Times::micro) / keys.size() << " (ns / key)" << std::endl;
-  return true;
-}
-
-template<typename T>
 int benchmark(const char* argv[]) {
   auto num_nodes = static_cast<uint64_t>(std::atoll(argv[4]));
   double load_factor = std::atof(argv[5]);
   auto colls_bits = static_cast<uint8_t>(std::atoi(argv[6]));
 
-  // expecting that ASCII codes 253, 254 and 255 are unused
+  // expecting that the concrete alphabet size is less than 253
   T bonsai{(uint64_t) (num_nodes / load_factor), 253, colls_bits};
-  std::cout << "benchmark of " << bonsai.name() << std::endl;
+  std::cout << "----- " << bonsai.name() << " -----" << std::endl;
 
   {
     KeyReader reader{argv[1]};
     if (!reader.is_ready()) {
-      std::cerr << "error : failed to open " << argv[1] << std::endl;
+      std::cerr << "ERROR: failed to open " << argv[1] << std::endl;
       return 1;
     }
-    if (!run_insertion(bonsai, reader)) {
-      return 1;
+
+    StopWatch sw;
+    while (true) {
+      auto key = reader.next();
+      if (key.empty()) {
+        break;
+      }
+      auto ptr = reinterpret_cast<const uint8_t*>(key.c_str());
+      auto len = key.size() + 1; // including terminators
+      bonsai.insert(ptr, len);
     }
+    std::cout << "insert time: " << sw(Times::micro) / bonsai.num_strs() << " (ns/key)" << std::endl;
   }
 
   if (std::strcmp(argv[2], "-") != 0) {
     auto keys = read_keys(argv[2]);
-    if (!run_search(bonsai, keys)) {
-      return 1;
+    uint64_t ok = 0, ng = 0;
+    StopWatch sw;
+    for (const auto& key : keys) {
+      auto ptr = reinterpret_cast<const uint8_t*>(key.c_str());
+      auto len = key.size() + 1; // including terminators
+      if (bonsai.search(ptr, len)) {
+        ++ok;
+      } else {
+        ++ng;
+      }
     }
+    std::cout << "OK: " << ok << ", NG: " << ng << std::endl;
+    std::cout << "search time: " << sw(Times::micro) / keys.size() << " (ns/key)" << std::endl;
   }
 
   bonsai.show_stat(std::cout);
@@ -212,15 +183,15 @@ int main(int argc, const char* argv[]) {
   usage << argv[0] << " <key> <query> <type> <#nodes> <load_factor> <colls_bits>";
 
   if (argc == 2) {
-    std::cout << "#nodes : " << count_num_nodes(argv[1]) << std::endl;
+    std::cout << "#nodes: " << count_num_nodes(argv[1]) << std::endl;
     return 0;
   }
 
   if (argc == 7) {
     if (*argv[3] == '1') {
-      return benchmark<Bonsai>(argv);
+      return benchmark<BonsaiDCW>(argv);
     } else if (*argv[3] == '2') {
-      return benchmark<BonsaiPlus>(argv);
+      return benchmark<BonsaiPR>(argv);
     }
   }
 

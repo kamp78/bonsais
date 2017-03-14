@@ -14,5 +14,5 @@ message(STATUS "BUILD_TYPE is ${CMAKE_BUILD_TYPE}")
 link_directories(~/lib)
 include_directories(~/include)
 
-add_executable(bonsais bonsais.cpp Bonsai.cpp BonsaiPlus.cpp Basics.hpp)
+add_executable(bonsais bonsais.cpp BonsaiDCW.cpp BonsaiPR.cpp Basics.hpp)
 target_link_libraries(bonsais sdsl)
