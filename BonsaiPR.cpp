@@ -28,6 +28,41 @@ BonsaiPR::BonsaiPR(uint64_t num_slots, uint64_t alp_size, uint8_t width_1st) {
   table_.fill(UINT8_MAX);
 }
 
+bool BonsaiPR::search(const uint8_t* str, uint64_t len) const {
+  uint64_t node_id = root_id_;
+  for (uint64_t i = 0; i < len; ++i) {
+    if (table_[str[i]] == UINT8_MAX) {
+      return false;
+    }
+    if (!get_child_(node_id, static_cast<uint64_t>(table_[str[i]]))) {
+      return false;
+    }
+  }
+  return get_fbit_(node_id);
+}
+
+bool BonsaiPR::insert(const uint8_t* str, uint64_t len) {
+  uint64_t node_id = root_id_;
+  bool is_tail = false;
+  for (uint64_t i = 0; i < len; ++i) {
+    if (table_[str[i]] == UINT8_MAX) {
+      table_[str[i]] = alp_count_++;
+      if (alp_size_ <= alp_count_) {
+        std::cerr << "ERROR: alp_size_ < alp_count_" << std::endl;
+        exit(1);
+      }
+    }
+    is_tail = add_child_(node_id, static_cast<uint64_t>(table_[str[i]]), is_tail);
+  }
+  if (get_fbit_(node_id)) {
+    assert(!is_tail);
+    return false;
+  }
+  set_fbit_(node_id, true);
+  ++num_strs_;
+  return true;
+}
+
 void BonsaiPR::show_stat(std::ostream& os) const {
   os << "BonsaiPlus stat." << std::endl;
   os << "num slots:   " << num_slots_ << std::endl;

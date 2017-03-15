@@ -29,6 +29,41 @@ BonsaiDCW::BonsaiDCW(uint64_t num_slots, uint64_t alp_size, uint8_t colls_bits) 
   set_vbit_(root_id_.init_pos, true);
 }
 
+bool BonsaiDCW::search(const uint8_t* str, uint64_t len) const {
+  auto node_id = root_id_;
+  for (uint64_t i = 0; i < len; ++i) {
+    if (table_[str[i]] == UINT8_MAX) {
+      return false;
+    }
+    if (!get_child_(node_id, static_cast<uint64_t>(table_[str[i]]))) {
+      return false;
+    }
+  }
+  return get_fbit_(node_id.slot_pos);
+}
+
+bool BonsaiDCW::insert(const uint8_t* str, uint64_t len) {
+  auto node_id = root_id_;
+  for (uint64_t i = 0; i < len; ++i) {
+    if (table_[str[i]] == UINT8_MAX) {
+      table_[str[i]] = alp_count_++;
+      if (alp_size_ <= alp_count_) {
+        std::cerr << "ERROR: alp_size_ < alp_count_" << std::endl;
+        exit(1);
+      }
+    }
+    add_child_(node_id, static_cast<uint64_t>(table_[str[i]]));
+  }
+
+  if (get_fbit_(node_id.slot_pos)) {
+    return false;
+  }
+
+  set_fbit_(node_id.slot_pos, true);
+  ++num_strs_;
+  return true;
+}
+
 void BonsaiDCW::show_stat(std::ostream& os) const {
   os << "Bonsai stat." << std::endl;
   os << "num slots:   " << num_slots_ << std::endl;

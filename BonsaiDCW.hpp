@@ -16,71 +16,11 @@ public:
 
   static std::string name() { return "BonsaiDCW"; }
 
-  bool search(const uint8_t* str, uint64_t len) const {
-    auto node_id = root_id_;
-    for (uint64_t i = 0; i < len; ++i) {
-      if (table_[str[i]] == UINT8_MAX) {
-        return false;
-      }
-      if (!get_child_(node_id, static_cast<uint64_t>(table_[str[i]]))) {
-        return false;
-      }
-    }
-    return get_fbit_(node_id.slot_pos);
-  }
+  bool search(const uint8_t* str, uint64_t len) const;
+  template<typename T> bool search(const T* str, uint64_t len) const;
 
-  template<typename T>
-  bool search(const T* str, uint64_t len) const {
-    static_assert(Is_pod<T>(), "T is not POD.");
-
-    auto node_id = root_id_;
-    for (uint64_t i = 0; i < len; ++i) {
-      if (!get_child_(node_id, static_cast<uint64_t>(str[i]))) {
-        return false;
-      }
-    }
-    return get_fbit_(node_id.slot_pos);
-  }
-
-  bool insert(const uint8_t* str, uint64_t len) {
-    auto node_id = root_id_;
-    for (uint64_t i = 0; i < len; ++i) {
-      if (table_[str[i]] == UINT8_MAX) {
-        table_[str[i]] = alp_count_++;
-        if (alp_size_ <= alp_count_) {
-          std::cerr << "ERROR: alp_size_ < alp_count_" << std::endl;
-          exit(1);
-        }
-      }
-      add_child_(node_id, static_cast<uint64_t>(table_[str[i]]));
-    }
-
-    if (get_fbit_(node_id.slot_pos)) {
-      return false;
-    }
-
-    set_fbit_(node_id.slot_pos, true);
-    ++num_strs_;
-    return true;
-  }
-
-  template<typename T>
-  bool insert(const T* str, uint64_t len) {
-    static_assert(Is_pod<T>(), "T is not POD.");
-
-    auto node_id = root_id_;
-    for (uint64_t i = 0; i < len; ++i) {
-      add_child_(node_id, static_cast<uint64_t>(str[i]));
-    }
-
-    if (get_fbit_(node_id.slot_pos)) {
-      return false;
-    }
-
-    set_fbit_(node_id.slot_pos, true);
-    ++num_strs_;
-    return true;
-  }
+  bool insert(const uint8_t* str, uint64_t len);
+  template<typename T> bool insert(const T* str, uint64_t len);
 
   uint64_t num_strs() const { return num_strs_; }
   void show_stat(std::ostream& os) const;
@@ -142,6 +82,37 @@ private:
 
   void update_slot_(uint64_t pos, uint64_t quo, bool vbit, bool cbit, bool fbit);
 };
+
+template<typename T>
+bool BonsaiDCW::search(const T* str, uint64_t len) const {
+  static_assert(Is_pod<T>(), "T is not POD.");
+
+  auto node_id = root_id_;
+  for (uint64_t i = 0; i < len; ++i) {
+    if (!get_child_(node_id, static_cast<uint64_t>(str[i]))) {
+      return false;
+    }
+  }
+  return get_fbit_(node_id.slot_pos);
+}
+
+template<typename T>
+bool BonsaiDCW::insert(const T* str, uint64_t len) {
+  static_assert(Is_pod<T>(), "T is not POD.");
+
+  auto node_id = root_id_;
+  for (uint64_t i = 0; i < len; ++i) {
+    add_child_(node_id, static_cast<uint64_t>(str[i]));
+  }
+
+  if (get_fbit_(node_id.slot_pos)) {
+    return false;
+  }
+
+  set_fbit_(node_id.slot_pos, true);
+  ++num_strs_;
+  return true;
+}
 
 } //bonsais
 
