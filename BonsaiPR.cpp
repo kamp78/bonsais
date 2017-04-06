@@ -23,8 +23,8 @@ BonsaiPR::BonsaiPR(uint64_t num_slots, uint64_t alp_size, uint8_t width_1st) {
     std::cerr << "The latter is " << (uint32_t) num_bits(empty_mark_) << std::endl;
   }
 
-  slots_ = sdsl::int_vector<>(num_slots, empty_mark_ << (width_1st + 1),
-                              num_bits(empty_mark_) + width_1st + (uint8_t) 1);
+  FitVector(num_slots, num_bits(empty_mark_) + width_1st + 1U,
+            empty_mark_ << (width_1st + 1U)).swap(slots_);
   table_.fill(UINT8_MAX);
 }
 
@@ -72,7 +72,7 @@ void BonsaiPR::show_stat(std::ostream& os) const {
   os << "auxs rate:   " << static_cast<double>(aux_map_.size()) / num_slots_ << std::endl;
   os << "alp size:    " << alp_size_ << std::endl;
   os << "width 1st:   " << (uint32_t) width_1st_ << std::endl;
-  os << "size slots:  " << sdsl::size_in_bytes(slots_) << std::endl;
+  os << "size slots:  " << slots_.size_in_bytes() << std::endl;
   os << "average dsp: " << calc_ave_dsp() << std::endl;
 }
 
@@ -166,11 +166,11 @@ uint64_t BonsaiPR::right_(uint64_t pos) const {
 }
 
 uint64_t BonsaiPR::get_quo_(uint64_t pos) const {
-  return slots_[pos] >> (width_1st_ + 1);
+  return slots_.get(pos) >> (width_1st_ + 1);
 }
 
 uint64_t BonsaiPR::get_dsp_(uint64_t pos) const {
-  uint64_t dsp = (slots_[pos] >> 1) & max_dsp1st_;
+  uint64_t dsp = (slots_.get(pos) >> 1) & max_dsp1st_;
   if (dsp < max_dsp1st_) {
     return dsp;
   }
@@ -179,11 +179,11 @@ uint64_t BonsaiPR::get_dsp_(uint64_t pos) const {
 }
 
 bool BonsaiPR::get_fbit_(uint64_t pos) const {
-  return (slots_[pos] & 1U) == 1U;
+  return (slots_.get(pos) & 1U) == 1U;
 }
 
 void BonsaiPR::set_fbit_(uint64_t pos, bool bit) {
-  slots_[pos] = (slots_[pos] & ~1U) | bit;
+  slots_.set(pos, (slots_.get(pos) & ~1U) | bit);
 }
 
 void BonsaiPR::update_slot_(uint64_t pos, uint64_t quo, uint64_t dsp, bool fbit) {
@@ -197,7 +197,7 @@ void BonsaiPR::update_slot_(uint64_t pos, uint64_t quo, uint64_t dsp, bool fbit)
     aux_map_.insert({pos, dsp});
   }
 
-  slots_[pos] = val | fbit;
+  slots_.set(pos, val | fbit);
 }
 
 } // bonsais

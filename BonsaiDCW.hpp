@@ -1,7 +1,7 @@
-#ifndef BONSAIS_BONSAI_HPP
-#define BONSAIS_BONSAI_HPP
+#ifndef BONSAIS_BONSAI_DCW_HPP
+#define BONSAIS_BONSAI_DCW_HPP
 
-#include "Basics.hpp"
+#include "FitVector.hpp"
 
 namespace bonsais {
 
@@ -47,7 +47,7 @@ private:
   uint64_t prime_;
   uint64_t multiplier_;
 
-  sdsl::int_vector<> slots_; // with quotient value, virgin bit, change bit, and final bit
+  FitVector slots_; // with quotient value, virgin bit, change bit, and final bit
 
   const uint64_t quo_inv_mask_ = 7U;
   const uint64_t vbit_inv_mask_ = ~(1U << 2);
@@ -116,4 +116,4 @@ bool BonsaiDCW::insert(const T* str, uint64_t len) {
 
 } //bonsais
 
-#endif //BONSAIS_BONSAI_HPP
+#endif //BONSAIS_BONSAI_DCW_HPP

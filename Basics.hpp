@@ -1,6 +1,7 @@
 #ifndef BONSAIS_BASICS_HPP
 #define BONSAIS_BASICS_HPP
 
+#include <algorithm>
 #include <array>
 #include <cassert>
 #include <iostream>
@@ -12,8 +13,6 @@
 #include <sstream>
 #include <cmath>
 #include <memory>
-
-#include <sdsl/int_vector.hpp>
 
 namespace bonsais {
 
@@ -28,7 +27,12 @@ struct HashValue {
 };
 
 inline uint8_t num_bits(uint64_t n) {
-  return static_cast<uint8_t>(sdsl::bits::hi(n) + 1);
+  uint8_t ret = 0;
+  do {
+    n >>= 1;
+    ++ret;
+  } while (n);
+  return ret;
 }
 
 inline bool is_prime(uint64_t n) {

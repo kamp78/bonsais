@@ -1,3 +1,8 @@
+#include <cstring>
+#include <chrono>
+#include <fstream>
+#include <stack>
+
 #include "BonsaiDCW.hpp"
 #include "BonsaiPR.hpp"
 

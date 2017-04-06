@@ -21,8 +21,7 @@ BonsaiDCW::BonsaiDCW(uint64_t num_slots, uint64_t alp_size, uint8_t colls_bits) 
     std::cerr << "The latter is " << (uint32_t) num_bits(empty_mark_) << std::endl;
   }
 
-  slots_ = sdsl::int_vector<>(num_slots, (empty_mark_ << 3) | (1U << 1),
-                              num_bits(empty_mark_) + (uint8_t) 3);
+  FitVector(num_slots, num_bits(empty_mark_) + 3, (empty_mark_ << 3) | (1U << 1)).swap(slots_);
   table_.fill(UINT8_MAX);
 
   set_quo_(root_id_.init_pos, 0); // other than empty_mark_
@@ -71,7 +70,7 @@ void BonsaiDCW::show_stat(std::ostream& os) const {
   os << "load factor: " << static_cast<double>(num_nodes_) / num_slots_ << std::endl;
   os << "alp size:    " << alp_size_ << std::endl;
   os << "colls limit: " << colls_limit_ << std::endl;
-  os << "size slots:  " << sdsl::size_in_bytes(slots_) << std::endl;
+  os << "size slots:  " << slots_.size_in_bytes() << std::endl;
 }
 
 // expecting 0 <= quo <= alp_size + 1
@@ -248,44 +247,44 @@ uint64_t BonsaiDCW::left_(uint64_t pos) const {
 // Copies a slot from the right slot except virgin bit information.
 uint64_t BonsaiDCW::copy_from_right_(uint64_t pos) {
   auto _pos = right_(pos);
-  slots_[pos] = (slots_[_pos] & vbit_inv_mask_) | (get_vbit_(pos) << 2);
+  slots_.set(pos, (slots_.get(_pos) & vbit_inv_mask_) | (get_vbit_(pos) << 2));
   return _pos;
 }
 
 uint64_t BonsaiDCW::get_quo_(uint64_t pos) const {
-  return slots_[pos] >> 3;
+  return slots_.get(pos) >> 3;
 }
 
 bool BonsaiDCW::get_vbit_(uint64_t pos) const {
-  return ((slots_[pos] >> 2) & 1U) == 1U;
+  return ((slots_.get(pos) >> 2) & 1U) == 1U;
 }
 
 bool BonsaiDCW::get_cbit_(uint64_t pos) const {
-  return ((slots_[pos] >> 1) & 1U) == 1U;
+  return ((slots_.get(pos) >> 1) & 1U) == 1U;
 }
 
 bool BonsaiDCW::get_fbit_(uint64_t pos) const {
-  return (slots_[pos] & 1U) == 1U;
+  return (slots_.get(pos) & 1U) == 1U;
 }
 
 void BonsaiDCW::set_quo_(uint64_t pos, uint64_t quo) {
-  slots_[pos] = (slots_[pos] & quo_inv_mask_) | (quo << 3);
+  slots_.set(pos, (slots_.get(pos) & quo_inv_mask_) | (quo << 3));
 }
 
 void BonsaiDCW::set_vbit_(uint64_t pos, bool bit) {
-  slots_[pos] = (slots_[pos] & vbit_inv_mask_) | (bit << 2);
+  slots_.set(pos, (slots_.get(pos) & vbit_inv_mask_) | (bit << 2));
 }
 
 void BonsaiDCW::set_cbit_(uint64_t pos, bool bit) {
-  slots_[pos] = (slots_[pos] & cbit_inv_mask_) | (bit << 1);
+  slots_.set(pos, (slots_.get(pos) & cbit_inv_mask_) | (bit << 1));
 }
 
 void BonsaiDCW::set_fbit_(uint64_t pos, bool bit) {
-  slots_[pos] = (slots_[pos] & fbit_inv_mask_) | bit;
+  slots_.set(pos, (slots_.get(pos) & fbit_inv_mask_) | bit);
 }
 
 void BonsaiDCW::update_slot_(uint64_t pos, uint64_t quo, bool vbit, bool cbit, bool fbit) {
-  slots_[pos] = (quo << 3) | (vbit << 2) | (cbit << 1) | fbit;
+  slots_.set(pos, (quo << 3) | (vbit << 2) | (cbit << 1) | fbit);
 }
 
 } //bonsais

@@ -1,7 +1,7 @@
-#ifndef BONSAIS_BONSAI_PLUS_HPP
-#define BONSAIS_BONSAI_PLUS_HPP
+#ifndef BONSAIS_BONSAI_PR_HPP
+#define BONSAIS_BONSAI_PR_HPP
 
-#include "Basics.hpp"
+#include "FitVector.hpp"
 
 namespace bonsais {
 
@@ -44,7 +44,7 @@ private:
   uint64_t prime_;
   uint64_t multiplier_;
 
-  sdsl::int_vector<> slots_; // with quotient value, displacement value, and final bit
+  FitVector slots_; // with quotient value, displacement value, and final bit
   std::map<uint64_t, uint32_t> aux_map_; // for exceeding displacement values
 
   // used for strings composed of uint8_t
@@ -99,4 +99,4 @@ bool BonsaiPR::insert(const T* str, uint64_t len) {
 
 } //bonsais
 
-#endif //BONSAIS_BONSAI_PLUS_HPP
+#endif //BONSAIS_BONSAI_PR_HPP
