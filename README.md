@@ -8,14 +8,14 @@ This library provides an experimental trie implementation using Bonsai structure
 The former and latter are implemented by the __BonsaiDCW__ and __BonsaiPR__ classes, respectively.
 BonsaiPR provides a very simple m-Bonsai (recursive) implementation without the secondary Bonsai hash table to store displacement values because it is difficult to estimate the table size.
 
-The library consults [mBonsai](https://github.com/Poyias/mBonsai) and uses [sdsl-lite](https://github.com/simongog/sdsl-lite).
+I consulted the [mBonsai](https://github.com/Poyias/mBonsai) implementation.
 
 ## Performance test
 
 ### Setting
 
-The experiments were carried out on Mac OS X 10.12 over Quad-core Intel Core i7 4.0 GHz, with 16 GB RAM (L2 cache: 256 KB; L3 cache: 8 MB).
-The codes were compiled using Apple LLVM version 8 (clang-8) with optimization -O3.
+The experiments were carried out on Intel Xeon E5540 @2.53 GHz, with 32 GiB of RAM (L2 cache: 1 MiB; L3 cache: 8 MiB), running Ubuntu Server 16.04 LTS.
+The codes were compiled using g++ (version 5.4.0) with optimization -O9.
 The runtimes were measured using __std::chrono::duration_cast__.
 To measure the required memory sizes, the __/usr/bin/time__ command was used.
 The tries were constructed from all page titles from English Wikipedia of February 2015 (# of nodes: 110,962,030, # of keys: 11,519,354, raw size: 227.2 MiB).
@@ -39,9 +39,9 @@ BonsaiPR applied 6 and 8 to *width_1st* in 0.8 and 0.9 load factors, respectivel
 The following table lists the timings needed in inserting keys (__Insert__), searching the keys (__Search__), and the maximum resident set size occupied by the insertion process  (__RSS__).
 The order of keys was random.
 
-| Data Structure   | RSS (MiB) | Insert (ns / key) | Search (ns / key) |
-|------------------|----------:|------------------:|------------------:|
-| BonsaiDCW (0.8)  |     266.7 |              2.79 |              4.08 |
-| BonsaiDCW (0.9)  |     237.3 |              3.29 |              8.38 |
-| BonsaiPR (0.8)   |     256.8 |              1.99 |              2.05 |
-| BonsaiPR (0.9)   |     255.4 |              2.06 |              2.12 |
+| Data Structure | RSS (MiB) | Insert (ns / key) | Search (ns / key) |
+|-----------------|----------:|------------------:|------------------:|
+| BonsaiDCW (0.8) | 267.6 | 3.68 | 6.24 |
+| BonsaiDCW (0.9) | 238.3 | 4.54 | 14.88 |
+| BonsaiPR (0.8) | 259.4 | 2.33 | 2.04 |
+| BonsaiPR (0.9) | 257.2 | 2.46 | 2.18 |
