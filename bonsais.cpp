@@ -149,7 +149,7 @@ int benchmark(const char* argv[]) {
 
     StopWatch sw;
     while (true) {
-      auto key = reader.next();
+      const auto& key = reader.next();
       if (key.empty()) {
         break;
       }
@@ -157,7 +157,7 @@ int benchmark(const char* argv[]) {
       auto len = key.size() + 1; // including terminators
       bonsai.insert(ptr, len);
     }
-    std::cout << "insert time: " << sw(Times::micro) / bonsai.num_strs() << " (ns/key)" << std::endl;
+    std::cout << "insert time: " << sw(Times::micro) / bonsai.num_strs() << " (us/key)" << std::endl;
   }
 
   if (std::strcmp(argv[2], "-") != 0) {
@@ -174,7 +174,7 @@ int benchmark(const char* argv[]) {
       }
     }
     std::cout << "OK: " << ok << ", NG: " << ng << std::endl;
-    std::cout << "search time: " << sw(Times::micro) / keys.size() << " (ns/key)" << std::endl;
+    std::cout << "search time: " << sw(Times::micro) / keys.size() << " (us/key)" << std::endl;
   }
 
   bonsai.show_stat(std::cout);
