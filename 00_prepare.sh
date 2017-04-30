@@ -6,4 +6,4 @@ cmake ..
 make
 cd ..
 
-tar xjvf enwiki-20150205.tar.bz2
+bzip2 -d sample.txt.bz2
